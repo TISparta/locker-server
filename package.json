@@ -1,0 +1,32 @@
+{
+  "name": "locker-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon server.js",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TISparta/locker-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TISparta/locker-server/issues"
+  },
+  "homepage": "https://github.com/TISparta/locker-server#readme",
+  "dependencies": {
+    "dotenv": "^7.0.0",
+    "koa": "^2.7.0",
+    "koa-bodyparser": "^4.2.1",
+    "koa-helmet": "^4.1.0",
+    "koa-respond": "^2.1.0",
+    "koa-router": "^7.4.0",
+    "mongoose": "^5.5.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
+}

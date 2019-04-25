@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { Schema } = mongoose
 
 const UserSchema = new Schema({
   givenName: {
@@ -6,6 +7,10 @@ const UserSchema = new Schema({
     required: true
   },
   familyName: {
+    type: String,
+    required: true
+  },
+  email: {
     type: String,
     required: true
   },

@@ -9,6 +9,10 @@ const LocationsSchema = new Schema({
   location: {
     type: String,
     required: true
+  },
+  state: {
+    type: String,
+    required: true
   }
 }, {
   toObject: {
@@ -16,6 +20,9 @@ const LocationsSchema = new Schema({
   },
   toJSON: {
     virtuals: true
+  },
+  timestamps: {
+    createdAt: 'created_at'
   }
 })
 

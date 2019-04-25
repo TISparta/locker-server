@@ -47,7 +47,7 @@ app.use(require('helmet')())
 
 // Upload images
 app.use(require('multer')({
-  dest: path.join(__dirname, '../public/upload/tmp')
+  dest: path.join(__dirname, './public/upload/tmp')
 }).single('image'))
 
 // Static files

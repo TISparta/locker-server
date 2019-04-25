@@ -30,7 +30,7 @@ module.exports = app => {
     return res.redirect('/')
   })
   router.get('/locations', isAuthenticated, async (req, res) => {
-    return res.redirect('/locations', req.info)
+    return res.render('./locations', req.info)
   })
   router.get('/newBicycle', isAuthenticated, async (req, res) => {
     return res.render('./addBicycle', req.info)

@@ -54,6 +54,12 @@ module.exports = app => {
     req.flash('success', 'Bicicleta agregada exitosamente')
     return res.redirect('/')
   })
+  router.get('/bicycle', isAuthenticated, async (req, res) => {
+    const bicycle = await Bicycle.find({})
+    req.info.bicycle = bicycle
+    console.log(bicycle)
+    res.render('./bicycle', req.info)
+  })
   router.get('/bicycle/:code', isAuthenticated, async (req, res) => {
     const code = req.params.code
     const bicycle = await Bicycle.findOne({ code: code })
@@ -62,11 +68,11 @@ module.exports = app => {
         'message': 'Bicycle not found'
       })
     }
-    const locations = await Locations.find({ bicycle: bicycle._id }).sort({ createdAt: 'desc' })
-    return res.send({
-      'Bicicleta': bicycle,
-      'Locations': locations
-    })
+    const locations = await Locations.find({ bicycle: bicycle._id }).sort({ created_at: 'desc' })
+    req.info.bicycle = bicycle
+    req.info.locations = locations
+    console.log(locations)
+    return res.render('./infoBicycle', req.info)
   })
   router.post('/login', async (req, res) => {
     const body = req.body
@@ -82,7 +88,7 @@ module.exports = app => {
   })
   router.post('/flip', async (req, res) => {
     const body = req.body
-    if (!body['code'] || !body['location'] || !body['state']) {
+    if (!body['code'] || !body['lat'] || !body['lng'] || !body['state']) {
       return res.send({'message': 'Some field are empty'})
     }
     const bicycle = await Bicycle.findOne({ code: body['code'] })
@@ -91,7 +97,8 @@ module.exports = app => {
     }
     const location = new Locations({
       'bicycle': bicycle._id,
-      'location': body['location'],
+      'lat': body['lat'],
+      'lng': body['lng'],
       'state': body['state']
     })
     await location.save()

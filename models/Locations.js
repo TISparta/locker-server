@@ -6,7 +6,11 @@ const LocationsSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true
   },
-  location: {
+  lat: {
+    type: String,
+    required: true
+  },
+  lng: {
     type: String,
     required: true
   },

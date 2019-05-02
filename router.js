@@ -30,6 +30,18 @@ module.exports = app => {
     return res.redirect('/')
   })
   router.get('/locations', isAuthenticated, async (req, res) => {
+    const bicycle = await Bicycle.find({})
+    let locations = []
+    for (let b of bicycle) {
+      const point = await Locations.findOne({bicycle: b._id }).sort({ created_at: -1 })
+      if (point) {
+        let add = b.toJSON()
+        add.lat = point.lat
+        add.lng = point.lng
+        locations.push(add)
+      }
+    }
+    req.info.locations = locations
     return res.render('./locations', req.info)
   })
   router.get('/newBicycle', isAuthenticated, async (req, res) => {

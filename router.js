@@ -86,7 +86,7 @@ module.exports = app => {
     console.log(locations)
     return res.render('./infoBicycle', req.info)
   })
-  router.post('/login', async (req, res) => {
+  router.post('/loginGmail', async (req, res) => {
     const body = req.body
     if (!body['givenName'] || !body['familyName'] || !body['email'] ||
         !body['googleId']) {

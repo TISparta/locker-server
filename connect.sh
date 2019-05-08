@@ -1,1 +1,1 @@
-mongo mongodb+srv://cluster0-rmzfz.mongodb.net/test --username admin
+mongo ds213705.mlab.com:13705/academe -u admin -p admin123

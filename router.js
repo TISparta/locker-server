@@ -11,6 +11,11 @@ isAuthenticated = (req, res, next) => {
 }
 
 module.exports = app => {
+
+  router.get('/test', async (req, res) => {
+    res.render('./test', req.info)
+  })
+
   router.get('/', isAuthenticated, async (req, res) => {
     res.render('./landing', req.info)
   })

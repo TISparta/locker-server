@@ -43,13 +43,20 @@ module.exports = app => {
       const point = await Locations.findOne({bicycle: b._id }).sort({ created_at: -1 })
       if (point) {
         let add = b.toJSON()
+        let date = new Date(point.created_at)
+        let time = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate() + '|' +
+                date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
         add.lat = point.lat
         add.lng = point.lng
+        add.time = time
         locations.push(add)
       }
     }
     req.info.locations = locations
-    return res.render('./locations', req.info)
+    return res.render('./locations', {
+      layout: false,
+      locations: locations
+    })
   })
   router.get('/newBicycle', isAuthenticated, async (req, res) => {
     return res.render('./addBicycle', req.info)
@@ -105,9 +112,21 @@ module.exports = app => {
       })
     }
     const locations = await Locations.find({ bicycle: bicycle._id }).sort({ created_at: 'desc' })
+   
+    const l = []
+    for (let point of locations) {
+        let add = point.toJSON()
+        let date = new Date(point.created_at)
+        let time = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate() + '  ' +
+                date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        add.lat = point.lat
+        add.lng = point.lng
+        add.time = time
+        l.push(add)
+    }
+
     req.info.bicycle = bicycle
-    req.info.locations = locations
-    console.log(locations)
+    req.info.locations = l
     return res.render('./infoBicycle', req.info)
   })
   router.post('/loginGmail', async (req, res) => {

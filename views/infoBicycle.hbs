@@ -1,3 +1,4 @@
+
 <div class="container d-flex h-100">
   <div class="row justify-content-center" align="center">
 
@@ -19,13 +20,13 @@ href="/bicycle" style="color: black">
 
     {{#each locations}}
 
-    <a href="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}" class="waves-effect waves-light card col-10 green lighten-3
-m-2 w-100"
-href="/bicycle" style="color: black">
-      <h5 class="w-100">Ubicacion</h5>
-      <h5 class="w-100">Stado: {{state}}</h5>
-    </a>
-
+		<form class="form btn p-1 col-8 green lighten-3 p-0 m-2" 
+      target="_blank" action="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}">
+      <button class="m-0 w-100 p-0 green lighten-3" style="color: black" type="submit">
+        <h5 class="m-0 p-0">Ubicación</h5>
+        <h5 class="m-0 p-0">{{time}}</h5>
+      </button>
+		</form>
 
 
     {{else}}

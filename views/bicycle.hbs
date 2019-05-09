@@ -1,14 +1,27 @@
-<div class="container d-flex h-100">
-  <div class="row justify-content-center align-self-center" align="center">
+<div class="container d-flex h-100 my-auto">
+<!--  <div class="row justify-content-center align-self-center" align="center">
+-->
+  <div class="row justify-content-center m-2" align="center">
 
   {{#each bicycle}}
 
-    <a href="/bicycle/{{code}}" class="waves-effect waves-light card col-8 h-100 yellow lighten-3 m-2"
+		<form class="form card p-1 col-8 yellow lighten-3 p-0"
+      target="_blank" action="/bicycle/{{code}}">
+      <button class="m-0 w-100 yellow lighten-3" style="color: black" type="submit">
+        <h5 class="m-0"><strong>Código:</strong> {{code}}</h5>
+        <h5 class="m-0"><strong>Marca:</strong> {{brand}}</h5>
+        <img src="/public/upload/{{code}}{{ext}}" class="w-100 m-0 p-0" alt="">
+      </button>
+		</form>
+
+
+  {{else}}
+
+     <a href="#" class="waves-effect waves-light card col-8 h-100 yellow lighten-3 m-2"
 href="/bicycle" style="color: black">
-      <h5>Código: {{code}}</h5>
-      <h5>Marca: {{brand}}</h5>
-      <h5>Color: {{brand}}</h5>
+      <h5>No tienes bicicletas vinculadas</h5>
     </a>
+   
 
   {{/each}}
 

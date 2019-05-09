@@ -1,25 +1,21 @@
 <div class="container d-flex h-100">
-  <div class="row justify-content-center align-self-center" align="center">
+  <div class="row justify-content-center" align="center">
 
+    <div class="container">
     <a href="#" class="waves-effect waves-light card col-10 yellow lighten-3
 m-2 w-100"
 href="/bicycle" style="color: black">
-      <h5 class="w-100">Código: {{bicycle.code}}</h5>
+      <h5 class="w-100"><strong>Código:</strong> {{bicycle.code}}</h5>
     </a>
 
     <a href="#" class="waves-effect waves-light card col-10 yellow lighten-3
 m-2 w-100"
 href="/bicycle" style="color: black">
-      <h5 class="w-100">Código: {{bicycle.brand}}</h5>
+      <h5 class="w-100"><strong>Marca:</strong> {{bicycle.brand}}</h5>
     </a>
 
-    <a href="#" class="waves-effect waves-light card col-10 yellow lighten-3
-m-2 w-100"
-href="/bicycle" style="color: black">
-      <h5 class="w-100">Código: {{bicycle.color}}</h5>
-    </a>
-
-
+    <img src="/public/upload/{{bicycle.code}}{{bicycle.ext}}" class="w-100 m-0 p-0" alt="">
+    </div>
 
     {{#each locations}}
 

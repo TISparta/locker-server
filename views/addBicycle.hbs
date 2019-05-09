@@ -4,7 +4,7 @@
       <div class="card text-center">
         <span class="card-header h4 grey darken-3 ">Bicicleta</span>
         <div class="card-body">
-          <form action="/newBicycle" method="POST">
+          <form action="/newBicycle" method="POST" enctype="multipart/form-data">
             <div class="form-group">
               <input type="text" class="form-control" name="code"
 placeholder="Código" value="{{code}}"autofocus>
@@ -13,11 +13,20 @@ placeholder="Código" value="{{code}}"autofocus>
               <input type="text" class="form-control" name="brand"
 placeholder="Marca" value="{{brand}}">
             </div>
-            <div class="form-group">
-              <input type="text" class="form-control" name="color"
-placeholder="Color" value="{{color}}">
+      
+
+        <div class="form-group">
+          <div class="input-group">
+            <div class="custom-file">
+              <input type="file" name="image" class="custom-file-input"
+              id="inputGroupFile" aria-describedby="inputGroupFileAddon"
+              required/>
+              <label class="custom-file-label" for="inputGroupFile" align="left">Seleccionar imagen</label>
             </div>
-            <button class="btn waves-effect waves-light grey darken-3">
+</div>
+
+
+            <button class="btn waves-effect waves-light grey darken-3 m-2">
               Agregar
             </button>
           </form>

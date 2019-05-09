@@ -3,6 +3,8 @@ const passport = require('passport')
 const User = require('./models/User')
 const Bicycle = require('./models/Bicycle')
 const Locations = require('./models/Locations')
+const fs = require('fs-extra')
+const path = require('path')
 
 isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) return next()
@@ -55,8 +57,9 @@ module.exports = app => {
   router.post('/newBicycle', isAuthenticated, async (req, res) => {
     const body = req.body
     const code = body['code']
+    const brand = body['brand']
     const found = await Bicycle.findOne({ code: code })
-    if (!code || !body['brand'] || !body['color']) {
+    if (!code || !body['brand']) {
       const viewModel = req.body
       viewModel.error = 'Debes rellenar todos los campos'
       return res.render('./addBicycle', viewModel)
@@ -66,10 +69,26 @@ module.exports = app => {
       viewModel.error = 'El código ya está en uso'
       return res.render('./addBicycle', viewModel)
     }
-    const bicycle = new Bicycle(body)
-    await bicycle.save()
-    req.flash('success', 'Bicicleta agregada exitosamente')
-    return res.redirect('/')
+
+    const imageTempPath = req.file.path
+    const ext = path.extname(req.file.originalname).toLowerCase()
+    const targetPath = path.resolve(`public/upload/${code}${ext}`)
+
+    if (ext === '.png' || ext === '.jpg' || ext === '.jpeg' || ext === '.gif') {
+      await fs.rename(imageTempPath, targetPath)
+      const bicycle = new Bicycle({
+        'code': code,
+        'brand': brand,
+        'ext': ext
+      })
+      await bicycle.save();
+      req.flash('success', 'Bicicleta agregada exitosamente')
+      return res.redirect('/')
+    } else {
+      await fs.unlink(imageTempPath)
+      req.flash('error', 'Formato no válido')
+      return res.redirect('/newBicycle')
+    }
   })
   router.get('/bicycle', isAuthenticated, async (req, res) => {
     const bicycle = await Bicycle.find({})
@@ -94,7 +113,7 @@ module.exports = app => {
   router.post('/loginGmail', async (req, res) => {
     const body = req.body
     if (!body['givenName'] || !body['familyName'] || !body['email'] ||
-        !body['googleId']) {
+      !body['googleId']) {
       return res.send({ 'message': 'Some field are empty' })
     }
     const found = await User.findOne({ googleId: body['googleId'] })

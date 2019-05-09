@@ -10,7 +10,7 @@ const BicycleSchema = new Schema({
     type: String,
     required: true
   },
-  color: {
+  ext: {
     type: String,
     required: true
   }

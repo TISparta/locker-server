@@ -133,6 +133,7 @@ module.exports = app => {
     const body = req.body
     if (!body['givenName'] || !body['familyName'] || !body['email'] ||
       !body['googleId']) {
+      res.statusCode = 400;
       return res.send({ 'message': 'Some field are empty' })
     }
     const found = await User.findOne({ googleId: body['googleId'] })
@@ -143,18 +144,26 @@ module.exports = app => {
   })
   router.post('/flip', async (req, res) => {
     const body = req.body
-    if (!body['code'] || !body['lat'] || !body['lng'] || !body['state']) {
+    if (!body['code'] || !body['lat'] || !body['lng'] || !body['state'] || !body['googleId']) {
+      res.statusCode = 400;
       return res.send({'message': 'Some field are empty'})
     }
     const bicycle = await Bicycle.findOne({ code: body['code'] })
     if (!bicycle) {
+      res.statusCode = 400;
       return res.send({ 'message': 'Bicycle not registered' })
+    }
+    const user = await User.findOne({ googleId: body['googleId'] })
+    if (!user) {
+      res.statusCode = 400;
+      return res.send({ 'message': 'The User does not exists'})
     }
     const location = new Locations({
       'bicycle': bicycle._id,
       'lat': body['lat'],
       'lng': body['lng'],
-      'state': body['state']
+      'state': body['state'],
+      'googleId': body['googleId']
     })
     await location.save()
     return res.send({ 'message': 'OK' })

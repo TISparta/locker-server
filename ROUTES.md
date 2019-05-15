@@ -20,7 +20,8 @@
   "code": "elCodigoDeLaBicicleta",
   "lat": "-12.133538",
   "lng": "-77.023243",
-  "state": "start"
+  "state": "start",
+  "googleId": "116723637483739159972" 
 }
 ```
 

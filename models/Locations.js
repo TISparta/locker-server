@@ -17,6 +17,10 @@ const LocationsSchema = new Schema({
   state: {
     type: String,
     required: true
+  },
+  googleId: {
+    type: String,
+    required: true
   }
 }, {
   toObject: {

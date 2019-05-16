@@ -12,6 +12,13 @@ isAuthenticated = (req, res, next) => {
   res.redirect('/login')
 }
 
+function pad (s) {
+  console.log(s)
+  let t = '' + s
+  if (t.length == 1) return '0' + t;
+  return t;
+}
+
 module.exports = app => {
 
   router.get('/test', async (req, res) => {
@@ -112,16 +119,20 @@ module.exports = app => {
       })
     }
     const locations = await Locations.find({ bicycle: bicycle._id }).sort({ created_at: 'desc' })
-   
+  
     const l = []
     for (let point of locations) {
         let add = point.toJSON()
         let date = new Date(point.created_at)
-        let time = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate() + '  ' +
-                date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+        let time = date.getFullYear()+'-' + pad(date.getMonth()+1) + '-'+ pad(date.getDate()) + '  ' +
+                pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
         add.lat = point.lat
         add.lng = point.lng
         add.time = time
+        const user = await User.findOne({ googleId: point.googleId })
+        add.givenName = user.givenName
+        add.familyName = user.familyName
+        add.email = user.email
         l.push(add)
     }
 

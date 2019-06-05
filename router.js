@@ -179,5 +179,10 @@ module.exports = app => {
     await location.save()
     return res.send({ 'message': 'OK' })
   })
+  router.get('/history/:googleId', async (req, res) => {
+    const googleId = req.params.googleId
+    const history = await Locations.find({googleId: googleId }).sort({ created_at: -1 })
+    return res.send({ 'history': history })
+  })
   app.use(router)
 }

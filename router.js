@@ -19,6 +19,33 @@ function pad (s) {
   return t;
 }
 
+async function getLastLocations () {
+  const bicycle = await Bicycle.find({})
+  let locations = []
+  for (let b of bicycle) {
+    const point = await Locations.findOne({bicycle: b._id }).sort({ created_at: -1 })
+    if (point) {
+      let pib = b.toJSON()
+      let add = {}
+      let date = new Date(point.created_at)
+      let time = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate() + '|' +
+        date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
+      add.lat = point.lat
+      add.lng = point.lng
+      add.time = time
+      add.bicycle_code = pib.code
+      add.bicycle_brand = pib.brand
+      if (process.env.NODE_ENV === 'development') {
+        add.bicycle_image_url = 'http://localhost:3000/public/upload/' + pib.code + pib.ext
+      } else {
+        add.bicycle_image_url = 'http://178.128.216.229/public/upload' + pib.code + pib.ext
+      }
+      locations.push(add)
+    }
+  }
+  return locations
+}
+
 module.exports = app => {
 
   router.get('/test', async (req, res) => {
@@ -44,21 +71,7 @@ module.exports = app => {
     return res.redirect('/')
   })
   router.get('/locations', isAuthenticated, async (req, res) => {
-    const bicycle = await Bicycle.find({})
-    let locations = []
-    for (let b of bicycle) {
-      const point = await Locations.findOne({bicycle: b._id }).sort({ created_at: -1 })
-      if (point) {
-        let add = b.toJSON()
-        let date = new Date(point.created_at)
-        let time = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate() + '|' +
-                date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds();
-        add.lat = point.lat
-        add.lng = point.lng
-        add.time = time
-        locations.push(add)
-      }
-    }
+    const locations = await getLastLocations()
     req.info.locations = locations
     return res.render('./locations', {
       layout: false,
@@ -119,27 +132,27 @@ module.exports = app => {
       })
     }
     const locations = await Locations.find({ bicycle: bicycle._id }).sort({ created_at: 'desc' })
-  
+
     const l = []
     for (let point of locations) {
-        let add = point.toJSON()
-        let date = new Date(point.created_at)
-        let time = date.getFullYear()+'-' + pad(date.getMonth()+1) + '-'+ pad(date.getDate()) + '  ' +
-                pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
-        add.lat = point.lat
-        add.lng = point.lng
-        add.time = time
-        const user = await User.findOne({ googleId: point.googleId })
-        add.givenName = user.givenName
-        add.familyName = user.familyName
-        add.email = user.email
-        l.push(add)
+      let add = point.toJSON()
+      let date = new Date(point.created_at)
+      let time = date.getFullYear()+'-' + pad(date.getMonth()+1) + '-'+ pad(date.getDate()) + '  ' +
+        pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+      add.lat = point.lat
+      add.lng = point.lng
+      add.time = time
+      const user = await User.findOne({ googleId: point.googleId })
+      add.givenName = user.givenName
+      add.familyName = user.familyName
+      add.email = user.email
+      l.push(add)
     }
-
     req.info.bicycle = bicycle
     req.info.locations = l
     return res.render('./infoBicycle', req.info)
   })
+  // To call by the application
   router.post('/loginGmail', async (req, res) => {
     const body = req.body
     if (!body['givenName'] || !body['familyName'] || !body['email'] ||
@@ -153,6 +166,7 @@ module.exports = app => {
     await user.save()
     return res.send({ 'message': 'OK. User created' })
   })
+  // To call by the application
   router.post('/flip', async (req, res) => {
     const body = req.body
     if (!body['code'] || !body['lat'] || !body['lng'] || !body['state'] || !body['googleId']) {
@@ -179,10 +193,35 @@ module.exports = app => {
     await location.save()
     return res.send({ 'message': 'OK' })
   })
+  // To call by the application
   router.get('/history/:googleId', async (req, res) => {
     const googleId = req.params.googleId
-    const history = await Locations.find({googleId: googleId }).sort({ created_at: -1 })
+    const _history = await Locations.find({googleId: googleId }).sort({ created_at: -1 })
+    const history = []
+    for (let h of _history) {
+      let add = h.toJSON()
+      delete add._id
+      delete add.id
+      delete add.__v
+      delete add.googleId
+      const bicycle = await Bicycle.findOne({ _id: add.bicycle })
+      let pib = bicycle.toJSON()
+      add.bicycle_code = pib.code
+      add.bicycle_brand = pib.brand
+      if (process.env.NODE_ENV === 'development') {
+        add.bicycle_image_url = 'http://localhost:3000/public/upload/' + pib.code + pib.ext
+      } else {
+        add.bicycle_image_url = 'http://178.128.216.229/public/upload' + pib.code + pib.ext
+      }
+      delete add.bicycle
+      history.push(add)
+    }
     return res.send({ 'history': history })
+  })
+  // To call by the application
+  router.get('/allLocations', async (req, res) => {
+    const locations = await getLastLocations()
+    return res.send({'locations': locations })
   })
   app.use(router)
 }

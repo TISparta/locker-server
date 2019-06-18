@@ -50,7 +50,8 @@
         url: 'http://i.imgur.com/AYFjkdJ.png',
       }
     })
-    let foo = '<a href="/bicycle/' + coords.code + '\">+Info</a>'
+    let foo = '<img src="' + coords.image + '" class="w-100 m-0 p-0" alt="">' + 
+    '<a href="/bicycle/' + coords.code + '\">+Info</a>'
     var infoWindow = new google.maps.InfoWindow({
       content: String(foo)
     })
@@ -60,7 +61,7 @@
   }
 
   {{#each locations}}
-    addMarker({code: "{{code}}", lat: parseFloat("{{lat}}"), lng: parseFloat("{{lng}}") })
+    addMarker({code: "{{bicycle_code}}", image: "{{bicycle_image_url}}", lat: parseFloat("{{lat}}"), lng: parseFloat("{{lng}}") })
   {{/each}}
 
 }

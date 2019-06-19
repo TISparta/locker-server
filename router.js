@@ -38,7 +38,7 @@ async function getLastLocations () {
       if (process.env.NODE_ENV === 'development') {
         add.bicycle_image_url = 'http://localhost:3000/public/upload/' + pib.code + pib.ext
       } else {
-        add.bicycle_image_url = 'http://178.128.216.229/public/upload' + pib.code + pib.ext
+        add.bicycle_image_url = 'http://178.128.216.229/public/upload/' + pib.code + pib.ext
       }
       locations.push(add)
     }
@@ -211,7 +211,7 @@ module.exports = app => {
       if (process.env.NODE_ENV === 'development') {
         add.bicycle_image_url = 'http://localhost:3000/public/upload/' + pib.code + pib.ext
       } else {
-        add.bicycle_image_url = 'http://178.128.216.229/public/upload' + pib.code + pib.ext
+        add.bicycle_image_url = 'http://178.128.216.229/public/upload/' + pib.code + pib.ext
       }
       delete add.bicycle
       history.push(add)

@@ -35,6 +35,7 @@ async function getLastLocations () {
       add.time = time
       add.bicycle_code = pib.code
       add.bicycle_brand = pib.brand
+      add.bicycle_active = b.active
       if (process.env.NODE_ENV === 'development') {
         add.bicycle_image_url = 'http://localhost:3000/public/upload/' + pib.code + pib.ext
       } else {
@@ -223,5 +224,60 @@ module.exports = app => {
     const locations = await getLastLocations()
     return res.send({'locations': locations })
   })
+  // To call by the application
+  router.get('/start/:googleId/:bicycleCode', async (req, res) => {
+    const googleId = req.params.googleId
+    const bicycleCode = req.params.bicycleCode
+    const bicycle = await Bicycle.findOne({ code: bicycleCode })
+    const user = await User.findOne({ googleId: googleId })
+    if (!bicycle) {
+      res.statusCode = 400
+      return res.send({'message': 'Bicycle does not exists'})
+    }
+    if (!bicycle) {
+      res.statusCode = 400
+      return res.send({'message': 'User does not exists'})
+    }
+    if (bicycle.currentUser) {
+      res.statusCode = 400
+      return res.send({'message': 'Bicycle in use'})
+    }
+    bicycle.active = true
+    bicycle.currentUser = googleId
+    bicycle.start = Date.now()
+    await bicycle.save()
+    res.statusCode = 200
+    res.send({'message': 'OK'})
+  })
+  // To call by the application
+  router.get('/finish/:googleId/:bicycleCode', async (req, res) => {
+    const googleId = req.params.googleId
+    const bicycleCode = req.params.bicycleCode
+    const bicycle = await Bicycle.findOne({ code: bicycleCode })
+    const user = await User.findOne({ googleId: googleId })
+    if (!bicycle) {
+      res.statusCode = 400
+      return res.send({'message': 'Bicycle does not exists'})
+    }
+    if (!bicycle) {
+      res.statusCode = 400
+      return res.send({'message': 'User does not exists'})
+    }
+    if (!bicycle.active) {
+      res.statusCode = 400
+      return res.send({'message': 'Bicycle is not in use'})
+    }
+    if (bicycle.currentUser != googleId) {
+      res.statusCode = 400
+      return res.send({'message': 'Bicycle in use by someone else'})
+    }
+    bicycle.currentUser = ""
+    bicycle.active = false
+    // Date.now() - bicycle.start -> do something
+    await bicycle.save()
+    res.statusCode = 200
+    res.send({'message': 'OK'})
+  })
+
   app.use(router)
 }

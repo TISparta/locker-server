@@ -13,6 +13,18 @@ const BicycleSchema = new Schema({
   ext: {
     type: String,
     required: true
+  },
+  active: {
+    type: Boolean,
+    default: false
+  },
+  currentUser: {
+    type: String,
+    default: ""
+  },
+  start: {
+    type: Date,
+    default: Date.now
   }
 }, {
   toObject: {

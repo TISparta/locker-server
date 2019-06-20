@@ -69,7 +69,8 @@
       "time": "2019-5-15|16:54:13",
       "bicycle_code": "codigo1",
       "bicycle_brand": "marca1",
-      "bicycle_image_url": "http://localhost:3000/public/upload/codigo1.jpg"
+      "bicycle_image_url": "http://localhost:3000/public/upload/codigo1.jpg",
+      "bicycle_active": true
     },
     {
       "lat": "-12.135106",
@@ -77,8 +78,30 @@
       "time": "2019-6-18|18:50:41",
       "bicycle_code": "codigo2",
       "bicycle_brand": "marca2",
-      "bicycle_image_url": "http://localhost:3000/public/upload/codigo2.jpg"
+      "bicycle_image_url": "http://localhost:3000/public/upload/codigo2.jpg",
+      "bicycle_active": false
     }
   ]
 }
 ```
+
+### /start/:googleId/:bicycleCode
+* **Method:** GET
+* **JSON:**
+```json
+{
+  "message": "OK"
+}
+```
+* **Error:** StatusCode = 400
+
+### /finish/:googleId/:bicycleCode
+* **Method:** GET
+* **JSON:**
+```json
+{
+  "message": "OK"
+}
+```
+* **Error:** StatusCode = 400
+

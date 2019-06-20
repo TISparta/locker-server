@@ -39,7 +39,11 @@
     })
 
   function addMarker (coords) {
-    console.log(coords)
+    console.log(coords.active)
+    let url = ''
+    if (coords.active == "true") url = 'http://i.imgur.com/zT16lih.png'
+    else url = 'http://i.imgur.com/AYFjkdJ.png'
+    console.log(url)
     var marker = new google.maps.Marker({
       position: {
         'lat': coords.lat,
@@ -47,7 +51,9 @@
       },
       map: map,
       icon: {
-        url: 'http://i.imgur.com/AYFjkdJ.png',
+        url: url
+        // url: 'http://i.imgur.com/zT16lih.png' // In use
+        // url: 'http://i.imgur.com/AYFjkdJ.png', // Available
       }
     })
     let foo = '<img src="' + coords.image + '" class="w-100 m-0 p-0" alt="">' + 
@@ -61,7 +67,8 @@
   }
 
   {{#each locations}}
-    addMarker({code: "{{bicycle_code}}", image: "{{bicycle_image_url}}", lat: parseFloat("{{lat}}"), lng: parseFloat("{{lng}}") })
+    addMarker({code: "{{bicycle_code}}", image: "{{bicycle_image_url}}", lat:
+      parseFloat("{{lat}}"), lng: parseFloat("{{lng}}"), active: "{{bicycle_active}}" })
   {{/each}}
 
 }

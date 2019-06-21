@@ -1,43 +1,79 @@
-
 <div class="container d-flex my-auto">
   <div class="row justify-content-center m-2" align="center">
 
-    <div class="container">
-    <a href="#" class="waves-effect waves-light card col-10 yellow lighten-3
-m-2 w-100"
-href="/bicycle" style="color: black">
+    {{#if current_lat}}
+    <a href="https://www.google.com/maps/search/?api=1&query={{current_lat}},{{current_lng}}" class="col-10 m-0 p-3 w-100 yellow lighten-3" style="color: black"
+target="_blank">Ubicación actual</a>
+
+    <br>    
+
+    {{/if}}
+
+    <a
+href="#"
+class="col-10 m-0 p-3 w-100 yellow lighten-3" style="color: black"
+target="_blank">
       <h5 class="w-100"><strong>Código:</strong> {{bicycle.code}}</h5>
-    </a>
+</a>
 
-    <a href="#" class="waves-effect waves-light card col-10 yellow lighten-3
-m-2 w-100"
-href="/bicycle" style="color: black">
+
+<br>
+    <a
+href="#"
+class="col-10 m-0 p-3 w-100 yellow lighten-3" style="color: black"
+target="_blank">
       <h5 class="w-100"><strong>Marca:</strong> {{bicycle.brand}}</h5>
-    </a>
+</a>
 
+
+
+    <div class="container p-3">
     <img src="/public/upload/{{bicycle.code}}{{bicycle.ext}}" class="w-100 m-0 p-0" alt="">
     </div>
 
-    {{#each locations}}
+    {{#each history}}
 
-		<form class="form btn p-1 col-8 transparent p-0" 
-      target="_blank" action="https://www.google.com/maps/search/?api=1&query={{lat}},{{lng}}" 
-      style="min-height: 100px; overflow: hidden; ">
-      <button class="m-0 w-100 green lighten-3" style="color: black" type="submit">
-        <h5 class="green lighten-3 m-0"><strong>Ubicación: </strong> {{time}}</h5>
-        <h5 class="green lighten-3 m-0
-p-0"><strong>Usuario: </strong>{{givenName}} {{familyName}}</h5>
-        <h5 class="green lighten-3 m-0
-p-0"><strong>Correo: </strong>{{email}}</h5>
-      </button>
-		</form>
+    <a
+href="#"
+class="col-10 m-0 p-3 w-100 green lighten-3" style="color: black"
+target="_blank"><strong>Usuario: </strong>{{givenName}} {{familyName}}</h5></a>
 
+    <a
+href="#"
+class="col-10 m-0 p-3 w-100 green lighten-3" style="color: black"
+target="_blank"><strong>Correo: </strong>{{email}}</h5></a>
+
+
+    <a
+href="#"
+class="col-10 m-0 p-3 w-100 green lighten-3" style="color: black"
+target="_blank"><strong>Hora de inicio: </strong>{{start}}</h5></a>
+
+    <a
+href="#"
+class="col-10 m-0 p-3 w-100 green lighten-3" style="color: black"
+target="_blank"><strong>Hora de finalizacion: </strong>{{finish}}</h5></a>
+
+
+    <a
+href="https://www.google.com/maps/search/?api=1&query={{lat_from}},{{lng_from}}"
+class="col-10 m-0 p-3 w-100 green lighten-3" style="color: black"
+target="_blank">Ubicación del punto de salida</a>
+
+    <br>
+
+    <a
+href="https://www.google.com/maps/search/?api=1&query={{lat_to}},{{lng_to}}"
+class="col-10 m-0 p-3 w-100 green lighten-3" style="color: black"
+target="_blank">Ubicación del punto de llegada</a>
+
+    <br>
 
     {{else}}
     <a href="#" class="waves-effect waves-light card col-10 green lighten-3
 m-2 w-100"
 href="/bicycle" style="color: black">
-      <h5 class="w-100">Aun no hay localicaciones registradas</h5>
+      <h5 class="w-100">Aun no hay historial registrado con esta bicicleta</h5>
     </a>
 
     {{/each}}

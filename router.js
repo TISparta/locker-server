@@ -128,29 +128,58 @@ module.exports = app => {
     const code = req.params.code
     const bicycle = await Bicycle.findOne({ code: code })
     if (!bicycle) {
+      res.statusCode = 400
       return res.send({
         'message': 'Bicycle not found'
       })
     }
-    const locations = await Locations.find({ bicycle: bicycle._id }).sort({ created_at: 'desc' })
-
-    const l = []
-    for (let point of locations) {
-      let add = point.toJSON()
-      let date = new Date(point.created_at)
-      let time = date.getFullYear()+'-' + pad(date.getMonth()+1) + '-'+ pad(date.getDate()) + '  ' +
-        pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
-      add.lat = point.lat
-      add.lng = point.lng
-      add.time = time
-      const user = await User.findOne({ googleId: point.googleId })
+    const _history = await History.find({code: code }).sort({ created_at: -1 })
+    const history = []
+    for (let h of _history) {
+      let add = h.toJSON()
+      delete add._id
+      delete add.id
+      delete add.__v
+            
+      const bicycle = await Bicycle.findOne({ code: add.code })
+      let pib = bicycle.toJSON()
+      add.bicycle_code = pib.code
+      add.bicycle_brand = pib.brand
+      if (process.env.NODE_ENV === 'development') {
+        add.bicycle_image_url = 'http://localhost:3000/public/upload/' + pib.code + pib.ext
+      } else {
+        add.bicycle_image_url = 'http://178.128.216.229/public/upload/' + pib.code + pib.ext
+      }
+      delete add.code
+      const user = await User.findOne({ googleId: add.googleId })
       add.givenName = user.givenName
       add.familyName = user.familyName
       add.email = user.email
-      l.push(add)
+      delete add.googleId
+
+      let date1 = new Date(add.start)
+      let start = date1.getFullYear()+'-' + pad(date1.getMonth()+1) + '-'+ pad(date1.getDate()) + '  ' +
+        pad(date1.getHours()) + ':' + pad(date1.getMinutes()) + ':' + pad(date1.getSeconds());
+
+      let date2 = new Date(add.finish)
+      let finish = date2.getFullYear()+'-' + pad(date2.getMonth()+1) + '-'+ pad(date2.getDate()) + '  ' +
+        pad(date2.getHours()) + ':' + pad(date2.getMinutes()) + ':' + pad(date2.getSeconds());
+
+      add.start = start
+      add.finish = finish
+
+      history.push(add)
+    }
+    
+    const point = await Locations.findOne({ bicycle : bicycle._id }).sort({ created_at: -1 })
+    console.log(point)
+
+    if (point) {
+      req.info.current_lat = point.lat
+      req.info.current_lng = point.lng
     }
     req.info.bicycle = bicycle
-    req.info.locations = l
+    req.info.history = history
     return res.render('./infoBicycle', req.info)
   })
   // To call by the application

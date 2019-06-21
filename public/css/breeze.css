@@ -108,6 +108,14 @@ body :-ms-input-placeholder {
   transition-timing-function: ease-in-put;
   font-weight: 200;
 }
+a {
+  padding: 20px 0;
+  position: relative;
+  z-index: 2;
+  height: auto;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
 form {
   padding: 20px 0;
   position: relative;
@@ -141,8 +149,7 @@ form input:focus {
 form button {
   appearance: none;
   outline: 0;
-  background-color: white;
-  border: 0;
+  background-color: whitespan border: 0;
   padding: 10px 15px;
   color: #53e3a6;
   border-radius: 3px;

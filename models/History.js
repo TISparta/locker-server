@@ -1,28 +1,20 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
 
-const BicycleSchema = new Schema({
+const HistorySchema = new Schema({
   code: {
     type: String,
     required: true
   },
-  brand: {
-    type: String,
-    required: true
-  },
-  ext: {
-    type: String,
-    required: true
-  },
-  active: {
-    type: Boolean,
-    default: false
-  },
-  currentUser: {
+  googleId: {
     type: String,
     default: ""
   },
   start: {
+    type: Date,
+    default: Date.now
+  },
+  finish: {
     type: Date,
     default: Date.now
   },
@@ -33,6 +25,14 @@ const BicycleSchema = new Schema({
   lng_from: {
     type: String,
     default: ""
+  },
+  lat_to: {
+    type: String,
+    default: ""
+  },
+  lng_to: {
+    type: String,
+    default: ""
   }
 }, {
   toObject: {
@@ -40,7 +40,10 @@ const BicycleSchema = new Schema({
   },
   toJSON: {
     virtuals: true
+  },
+  timestamps: {
+    createdAt: 'created_at'
   }
 })
 
-module.exports = mongoose.model('Bicycle', BicycleSchema)
+module.exports = mongoose.model('History', HistorySchema)

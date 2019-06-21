@@ -2,6 +2,7 @@ const router = require('express').Router()
 const passport = require('passport')
 const User = require('./models/User')
 const Bicycle = require('./models/Bicycle')
+const History = require('./models/History')
 const Locations = require('./models/Locations')
 const fs = require('fs-extra')
 const path = require('path')
@@ -13,7 +14,6 @@ isAuthenticated = (req, res, next) => {
 }
 
 function pad (s) {
-  console.log(s)
   let t = '' + s
   if (t.length == 1) return '0' + t;
   return t;
@@ -197,7 +197,13 @@ module.exports = app => {
   // To call by the application
   router.get('/history/:googleId', async (req, res) => {
     const googleId = req.params.googleId
-    const _history = await Locations.find({googleId: googleId }).sort({ created_at: -1 })
+    const _history = await History.find({googleId: googleId }).sort({ created_at: -1 })
+    const user = await User.findOne({ googleId: googleId })
+    if (!user) {
+      res.statusCode = 400;
+      res.send({'message': 'User does not exists'})
+    }
+
     const history = []
     for (let h of _history) {
       let add = h.toJSON()
@@ -205,7 +211,8 @@ module.exports = app => {
       delete add.id
       delete add.__v
       delete add.googleId
-      const bicycle = await Bicycle.findOne({ _id: add.bicycle })
+      
+      const bicycle = await Bicycle.findOne({ code: add.code })
       let pib = bicycle.toJSON()
       add.bicycle_code = pib.code
       add.bicycle_brand = pib.brand
@@ -214,7 +221,22 @@ module.exports = app => {
       } else {
         add.bicycle_image_url = 'http://178.128.216.229/public/upload/' + pib.code + pib.ext
       }
-      delete add.bicycle
+      delete add.code
+      add.givenName = user.givenName
+      add.familyName = user.familyName
+      add.email = user.email
+
+      let date1 = new Date(add.start)
+      let start = date1.getFullYear()+'-' + pad(date1.getMonth()+1) + '-'+ pad(date1.getDate()) + '  ' +
+        pad(date1.getHours()) + ':' + pad(date1.getMinutes()) + ':' + pad(date1.getSeconds());
+
+      let date2 = new Date(add.finish)
+      let finish = date2.getFullYear()+'-' + pad(date2.getMonth()+1) + '-'+ pad(date2.getDate()) + '  ' +
+        pad(date2.getHours()) + ':' + pad(date2.getMinutes()) + ':' + pad(date2.getSeconds());
+
+      add.start = start
+      add.finish = finish
+
       history.push(add)
     }
     return res.send({ 'history': history })
@@ -225,9 +247,11 @@ module.exports = app => {
     return res.send({'locations': locations })
   })
   // To call by the application
-  router.get('/start/:googleId/:bicycleCode', async (req, res) => {
+  router.get('/start/:googleId/:bicycleCode/:lat/:lng', async (req, res) => {
     const googleId = req.params.googleId
     const bicycleCode = req.params.bicycleCode
+    const lat = req.params.lat
+    const lng = req.params.lng
     const bicycle = await Bicycle.findOne({ code: bicycleCode })
     const user = await User.findOne({ googleId: googleId })
     if (!bicycle) {
@@ -242,17 +266,25 @@ module.exports = app => {
       res.statusCode = 400
       return res.send({'message': 'Bicycle in use'})
     }
+    if (!lat || !lng) {
+      ret.statusCode = 400
+      return res.send({'message': 'Invalid coordinates'})
+    }
     bicycle.active = true
     bicycle.currentUser = googleId
+    bicycle.lat_from = lat
+    bicycle.lng_from = lng
     bicycle.start = Date.now()
     await bicycle.save()
     res.statusCode = 200
     res.send({'message': 'OK'})
   })
   // To call by the application
-  router.get('/finish/:googleId/:bicycleCode', async (req, res) => {
+  router.get('/finish/:googleId/:bicycleCode/:lat/:lng', async (req, res) => {
     const googleId = req.params.googleId
     const bicycleCode = req.params.bicycleCode
+    const lat = req.params.lat
+    const lng = req.params.lng
     const bicycle = await Bicycle.findOne({ code: bicycleCode })
     const user = await User.findOne({ googleId: googleId })
     if (!bicycle) {
@@ -271,9 +303,28 @@ module.exports = app => {
       res.statusCode = 400
       return res.send({'message': 'Bicycle in use by someone else'})
     }
+    if (!lat || !lng) {
+      ret.statusCode = 400
+      return res.send({'message': 'Invalid coordinates'})
+    }
+
+    const history = new History({
+      'code': bicycleCode,
+      'googleId': googleId,
+      'start': bicycle.start,
+      'finish': Date.now(),
+      'lat_from': bicycle.lat_from,
+      'lng_from': bicycle.lng_from,
+      'lat_to': lat,
+      'lng_to': lng
+    })
+
     bicycle.currentUser = ""
     bicycle.active = false
-    // Date.now() - bicycle.start -> do something
+    bicycle.lat_from = ""
+    bicycle.lng_from = ""
+    
+    await history.save()
     await bicycle.save()
     res.statusCode = 200
     res.send({'message': 'OK'})

@@ -34,24 +34,32 @@
 {
   "history": [
     {
-      "lat": "-12.135106",
-      "lng": "-77.024327",
-      "state": "finish",
-      "created_at": "2019-05-15T21:54:13.451Z",
-      "updatedAt": "2019-05-15T21:54:13.451Z",
+      "lat_from": "-12.135106",
+      "lng_from": "-77.024327",
+      "lat_from": "-13.135106",
+      "lng_from": "-74.024327",
+      "start": "2019-06-21  10:44:08",
+      "finish": "2019-06-21  10:44:38",
       "bicycle_code": "codigo1",
       "bicycle_brand": "marca1",
-      "bicycle_image_url": "http://localhost:3000/public/upload/codigo1.jpg"
+      "bicycle_image_url": "http://localhost:3000/public/upload/codigo1.jpg",
+      "givenName": "Jose Leonidas",
+      "familyName": "Garcia Gonzales",
+      "email": "jose.garcia@utec.edu.pe"
     },
     {
-      "lat": "-12.135106",
-      "lng": "-77.024327",
-      "state": "finish",
-      "created_at": "2019-05-15T21:49:57.417Z",
-      "updatedAt": "2019-05-15T21:49:57.417Z",
-      "bicycle_code": "codigo1",
-      "bicycle_brand": "marca1",
-      "bicycle_image_url": "http://localhost:3000/public/upload/codigo1.jpg"
+      "lat_from": "-11.135106",
+      "lng_from": "-76.024327",
+      "lat_from": "-19.135106",
+      "lng_from": "-79.024327",
+      "start": "2019-06-21  10:44:08",
+      "finish": "2019-06-21  10:44:38",
+      "bicycle_code": "codigo2",
+      "bicycle_brand": "marca2",
+      "bicycle_image_url": "http://localhost:3000/public/upload/codigo2.jpg",
+      "givenName": "Otro nombre",
+      "familyName": "Apellidos",
+      "email": "whatever@utec.edu.pe"
     }
   ]
 }
@@ -85,7 +93,7 @@
 }
 ```
 
-### /start/:googleId/:bicycleCode
+### /start/:googleId/:bicycleCode/:lat/:lng
 * **Method:** GET
 * **JSON:**
 ```json
@@ -95,7 +103,7 @@
 ```
 * **Error:** StatusCode = 400
 
-### /finish/:googleId/:bicycleCode
+### /finish/:googleId/:bicycleCode/:lat/:lng
 * **Method:** GET
 * **JSON:**
 ```json

@@ -109,6 +109,15 @@ module.exports = app => {
         'brand': brand,
         'ext': ext
       })
+
+      const location = new Locations({
+        'bicycle': bicycle._id,
+        'lat': "-12.137356",
+        'lng': "-77.022793",
+        'state': "finish",
+      })
+      await location.save()
+
       await bicycle.save();
       req.flash('success', 'Bicicleta agregada exitosamente')
       return res.redirect('/')

@@ -1,1 +1,1 @@
-curl -X POST -d @in.json https://ancient-caverns-14647.herokuapp.com/flip --header "Content-Type:application/json"
+curl -X POST -d @in.json http://178.128.216.229/flip --header "Content-Type:application/json"

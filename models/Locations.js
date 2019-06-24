@@ -20,7 +20,7 @@ const LocationsSchema = new Schema({
   },
   googleId: {
     type: String,
-    required: true
+    default: ""
   }
 }, {
   toObject: {
